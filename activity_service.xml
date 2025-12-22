@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:fitsSystemWindows="true"
+        tools:context=".ServiceActivity">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="普通式和绑定式音乐播放"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="歌单列表 (点击选择)："
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"/>
+
+        <!-- 1 夜未央 -->
+        <TextView
+            android:id="@+id/tv_song_0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1. 夜未央"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:minHeight="48dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground"/>
+
+        <!-- 2 天气预报 -->
+        <TextView
+            android:id="@+id/tv_song_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2. 天气预报"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:minHeight="48dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground"/>
+
+        <!-- 3 消散对白 -->
+        <TextView
+            android:id="@+id/tv_song_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="3. 消散对白"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:minHeight="48dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground"/>
+
+        <!-- 4 唯一 -->
+        <TextView
+            android:id="@+id/tv_song_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="4. 唯一"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:minHeight="48dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground"/>
+
+        <!-- 5 我们俩 -->
+        <TextView
+            android:id="@+id/tv_song_4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="5. 我们俩"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:minHeight="48dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground"/>
+
+        <!-- 6 化作烟火为你坠落 -->
+        <TextView
+            android:id="@+id/tv_song_5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="6. 化作烟火为你坠落"
+            android:textSize="18sp"
+            android:padding="8dp"
+            android:minHeight="48dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?android:attr/selectableItemBackground"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"/>
+
+        <Button
+            android:id="@+id/mbutton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="播放"
+            android:textSize="20sp"/>
+
+        <Button
+            android:id="@+id/mbutton2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="停止"
+            android:textSize="20sp"/>
+
+        <Button
+            android:id="@+id/mbutton3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="绑定"
+            android:textSize="20sp"/>
+
+        <Button
+            android:id="@+id/mbutton4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="解绑"
+            android:textSize="20sp"/>
+
+    </LinearLayout>
+</ScrollView>

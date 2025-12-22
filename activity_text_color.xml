@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+    <TextView
+        android:id="@+id/tp_code_system"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="代码设置系统自带的颜色"
+        android:textSize="17sp"
+        tools:ignore="HardcodedText" />
+    <TextView
+        android:id="@+id/tp_code_eight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="代码设置八位文字的颜色"
+        android:textSize="17sp"
+        tools:ignore="HardcodedText" />
+    <TextView
+        android:id="@+id/tp_code_six"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="代码设置六位文字的颜色"
+        android:textSize="17sp"
+        android:textColor="@color/black"
+        tools:ignore="HardcodedText" />
+    <TextView
+        android:id="@+id/tp_code_backgroud"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="背景设置为绿色"
+        android:textSize="17sp"
+        tools:ignore="HardcodedText" />
+
+</LinearLayout>
