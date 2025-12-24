@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- 标题 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="网络数据传输综合演示"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:padding="16dp" />
+
+        <!-- ========== 1. 文字请求（网页请求） ========== -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1. 文字请求（网页请求）"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnTextNative"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="原生方式\n(HttpURLConnection)"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnTextOkHttp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="第三方方式\n(OkHttp)" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etTextUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="输入URL（例如：https://httpbin.org/get）"
+            android:inputType="textUri"
+            android:layout_marginTop="8dp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="8dp"
+            android:background="#F5F5F5">
+
+            <TextView
+                android:id="@+id/tvTextResult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="文字请求结果将显示在这里..."
+                android:textSize="12sp" />
+        </ScrollView>
+
+        <!-- ========== 2. 图片请求 ========== -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2. 图片请求"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnImageNative"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="原生方式\n(HttpURLConnection)"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnImageGlide"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="第三方方式\n(Glide)" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etImageUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="输入图片URL（例如：https://httpbin.org/image/png）"
+            android:inputType="textUri"
+            android:layout_marginTop="8dp" />
+
+        <ImageView
+            android:id="@+id/ivImageResult"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="8dp"
+            android:scaleType="fitCenter"
+            android:background="#F5F5F5"
+            android:contentDescription="图片显示区域" />
+
+        <!-- ========== 3. 流媒体（视频） ========== -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="3. 流媒体（视频播放）"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnVideoNative"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="原生方式\n(MediaPlayer)"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnVideoExoPlayer"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="第三方方式\n(ExoPlayer)" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/etVideoUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="输入视频URL（例如：https://www.w3schools.com/html/mov_bbb.mp4）"
+            android:inputType="textUri"
+            android:layout_marginTop="8dp" />
+
+        <!-- 原生MediaPlayer视频播放区域 -->
+        <VideoView
+            android:id="@+id/vvVideoNative"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
+
+        <!-- ExoPlayer视频播放区域 -->
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/pvVideoExoPlayer"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
+
+        <!-- 状态提示 -->
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="等待操作..."
+            android:textSize="14sp"
+            android:gravity="center"
+            android:padding="8dp" />
+
+    </LinearLayout>
+</ScrollView>
+

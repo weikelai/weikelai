@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SaveActivity">
+
+    <Button
+        android:id="@+id/savebutton1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:insetLeft="8dp"
+        android:insetTop="30dp"
+        android:insetRight="8dp"
+        android:text="sp输入"
+        android:textSize="35sp" />
+
+    <Button
+        android:id="@+id/savebutton2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:insetLeft="8dp"
+        android:insetTop="30dp"
+        android:insetRight="8dp"
+        android:text="sp输出"
+        android:textSize="35sp" />
+
+    <Button
+        android:id="@+id/savebutton3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:insetLeft="8dp"
+        android:insetTop="30dp"
+        android:insetRight="8dp"
+        android:text="file写入"
+        android:textSize="35sp" />
+</LinearLayout>
