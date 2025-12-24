@@ -52,8 +52,8 @@
 修改以下配置：
 
 ```java
-private static final String SECRET_ID = "AKIDWwGQWUO6e084oZIwUxJYdeaL6mGakhW9";  // 替换为您的SecretId
-private static final String SECRET_KEY = "Tp00oJdkfO9oLqRyMYr8FCzbAav3yhGd"; // 替换为您的SecretKey
+private static final String SECRET_ID = "SecretId";  // 替换为您的SecretId
+private static final String SECRET_KEY = "SecretKey"; // 替换为您的SecretKey
 ```
 
 **注意**：如果遇到 `FailedOperation.UnOpenError` 错误，说明服务未开通，请按照步骤1开通服务。
