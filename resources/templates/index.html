@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>婚介匹配系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            cursor: pointer;
+            background: #f5f5f5;
+            border: none;
+            font-size: 1.1em;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab:hover {
+            background: #764ba2;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .user-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .user-card {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .user-card p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .match-result {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .match-result h3 {
+            margin-bottom: 10px;
+        }
+
+        .score {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .interests {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .interest-tag {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+
+        .user-card-actions {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-edit,
+        .btn-delete {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: #f5576c;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #d63384;
+            transform: translateY(-2px);
+        }
+
+        .rules-container {
+            background: #f9f9f9;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .rule-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .rule-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .rule-item {
+            margin: 15px 0;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 6px;
+        }
+
+        .rule-item strong {
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .rule-item span {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .bipartite-graph {
+            margin: 30px 0;
+            padding: 30px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            position: relative;
+            min-height: 450px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .graph-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            position: relative;
+            min-height: 400px;
+            padding: 20px 0;
+        }
+
+        .left-nodes,
+        .right-nodes {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .node {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .node:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .node.matched {
+            background: linear-gradient(135deg, #f5576c 0%, #d63384 100%);
+            border-color: #ff1744;
+        }
+
+        .connection-line {
+            position: absolute;
+            height: 3px;
+            background: #999;
+            z-index: 1;
+            transform-origin: left center;
+            pointer-events: none;
+        }
+
+        .connection-line.matched {
+            background: linear-gradient(90deg, #f5576c 0%, #d63384 100%);
+            height: 5px;
+            box-shadow: 0 0 8px rgba(245, 87, 108, 0.6);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        .node-label {
+            margin-top: 8px;
+            text-align: center;
+            font-size: 0.95em;
+            color: #333;
+            font-weight: bold;
+            background: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💕 婚介匹配系统</h1>
+            <p>基于匈牙利算法的智能匹配平台</p>
+        </div>
+
+        <div class="content">
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('register')">用户注册</button>
+                <button class="tab" onclick="switchTab('users')">用户列表</button>
+                <button class="tab" onclick="switchTab('match')">开始匹配</button>
+                <button class="tab" onclick="switchTab('rules')">匹配规则</button>
+            </div>
+
+            <!-- 用户注册 -->
+            <div id="register" class="tab-content active">
+                <h2>新用户注册</h2>
+                <form id="registerForm" onsubmit="registerUser(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>姓名 *</label>
+                            <input type="text" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>性别 *</label>
+                            <select id="gender" required>
+                                <option value="">请选择</option>
+                                <option value="M">男</option>
+                                <option value="F">女</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>年龄 *</label>
+                            <input type="number" id="age" min="18" max="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label>身高 (cm) *</label>
+                            <input type="number" id="height" min="140" max="220" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>城市 *</label>
+                            <input type="text" id="city" required>
+                        </div>
+                        <div class="form-group">
+                            <label>学历</label>
+                            <select id="education">
+                                <option value="">请选择</option>
+                                <option value="高中">高中</option>
+                                <option value="大专">大专</option>
+                                <option value="本科">本科</option>
+                                <option value="硕士">硕士</option>
+                                <option value="博士">博士</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>职业</label>
+                        <input type="text" id="occupation">
+                    </div>
+
+                    <div class="form-group">
+                        <label>兴趣爱好（用逗号分隔）</label>
+                        <input type="text" id="interests" placeholder="例如: 阅读,旅游,音乐,运动">
+                    </div>
+
+                    <div class="form-group">
+                        <label>个人简介</label>
+                        <input type="text" id="description" placeholder="简单介绍一下自己">
+                    </div>
+
+                    <button type="submit" class="btn">注册</button>
+                </form>
+                <div id="registerMessage"></div>
+            </div>
+
+            <!-- 用户列表 -->
+            <div id="users" class="tab-content">
+                <h2>用户列表 <span style="font-size: 0.7em; color: #666; font-weight: normal;">(数据来自MySQL数据库)</span></h2>
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button class="btn" onclick="loadUsers()">刷新列表</button>
+                    <button class="btn" onclick="testDatabaseConnection()" style="background: #28a745;">测试数据库连接</button>
+                    <button class="btn" onclick="loadAllTablesData()" style="background: #17a2b8;">查看所有表数据</button>
+                </div>
+                <div id="dbStatus" style="margin-bottom: 15px;"></div>
+                <div id="allTablesData" style="margin-bottom: 20px;"></div>
+                <div id="userList" class="user-list"></div>
+            </div>
+
+            <!-- 匹配 -->
+            <div id="match" class="tab-content">
+                <h2>开始匹配</h2>
+                <div class="form-group">
+                    <label>最低兼容性分数 (0-100)</label>
+                    <input type="number" id="minScore" value="50" min="0" max="100">
+                </div>
+                <button class="btn" onclick="performMatch()">执行匹配</button>
+                <div id="matchResults"></div>
+            </div>
+
+            <!-- 匹配规则说明 -->
+            <div id="rules" class="tab-content">
+                <h2>匹配规则说明</h2>
+                <div id="rulesContent" class="rules-container">
+                    <p>正在加载规则说明...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑用户模态框 -->
+    <div id="editModal"
+        style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto;">
+        <div
+            style="max-width: 600px; margin: 50px auto; background: white; border-radius: 15px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);">
+            <h2 style="margin-bottom: 20px; color: #667eea;">编辑用户信息</h2>
+            <form id="editForm" onsubmit="updateUser(event)">
+                <input type="hidden" id="editUserId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>姓名 *</label>
+                        <input type="text" id="editName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>性别 *</label>
+                        <select id="editGender" required>
+                            <option value="">请选择</option>
+                            <option value="M">男</option>
+                            <option value="F">女</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>年龄 *</label>
+                        <input type="number" id="editAge" min="18" max="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label>身高 (cm) *</label>
+                        <input type="number" id="editHeight" min="140" max="220" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>城市 *</label>
+                        <input type="text" id="editCity" required>
+                    </div>
+                    <div class="form-group">
+                        <label>学历</label>
+                        <select id="editEducation">
+                            <option value="">请选择</option>
+                            <option value="高中">高中</option>
+                            <option value="大专">大专</option>
+                            <option value="本科">本科</option>
+                            <option value="硕士">硕士</option>
+                            <option value="博士">博士</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>职业</label>
+                    <input type="text" id="editOccupation">
+                </div>
+                <div class="form-group">
+                    <label>兴趣爱好（用逗号分隔）</label>
+                    <input type="text" id="editInterests" placeholder="例如: 阅读,旅游,音乐,运动">
+                </div>
+                <div class="form-group">
+                    <label>个人简介</label>
+                    <input type="text" id="editDescription" placeholder="简单介绍一下自己">
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn">保存修改</button>
+                    <button type="button" class="btn" onclick="closeEditModal()" style="background: #999;">取消</button>
+                </div>
+                <div id="editMessage" style="margin-top: 15px;"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/dating';
+
+        function switchTab(tabName) {
+            // 隐藏所有标签内容
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // 移除所有标签的active类
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // 显示选中的标签内容
+            document.getElementById(tabName).classList.add('active');
+
+            // 激活对应的标签按钮
+            event.target.classList.add('active');
+
+            // 如果是用户列表或匹配标签，自动加载数据
+            if (tabName === 'users') {
+                loadUsers();
+            } else if (tabName === 'rules') {
+                loadMatchRules();
+            }
+        }
+
+        async function registerUser(event) {
+            event.preventDefault();
+
+            const interestsStr = document.getElementById('interests').value;
+            const interests = interestsStr ? interestsStr.split(',').map(s => s.trim()) : [];
+
+            const user = {
+                name: document.getElementById('name').value,
+                gender: document.getElementById('gender').value,
+                age: parseInt(document.getElementById('age').value),
+                height: parseInt(document.getElementById('height').value),
+                city: document.getElementById('city').value,
+                education: document.getElementById('education').value,
+                occupation: document.getElementById('occupation').value,
+                interests: interests,
+                description: document.getElementById('description').value
+            };
+
+            try {
+                const response = await fetch(API_BASE + '/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(user)
+                });
+
+                const data = await response.json();
+
+                const messageDiv = document.getElementById('registerMessage');
+                if (data.success) {
+                    messageDiv.innerHTML = `<div class="message success">注册成功！用户ID: ${data.userId}</div>`;
+                    document.getElementById('registerForm').reset();
+                } else {
+                    messageDiv.innerHTML = `<div class="message error">注册失败: ${data.message}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('registerMessage').innerHTML =
+                    `<div class="message error">错误: ${error.message}</div>`;
+            }
+        }
+
+        // 测试数据库连接
+        async function testDatabaseConnection() {
+            const statusDiv = document.getElementById('dbStatus');
+            statusDiv.innerHTML = '<p style="color: #666;">正在测试数据库连接...</p>';
+
+            try {
+                // 通过获取用户列表来测试数据库连接
+                const response = await fetch(API_BASE + '/users');
+                const data = await response.json();
+
+                if (data.success) {
+                    statusDiv.innerHTML = `
+                        <div class="message success">
+                            ✓ 数据库连接成功！当前共有 ${data.count} 个用户
+                        </div>
+                    `;
+                } else {
+                    statusDiv.innerHTML = `
+                        <div class="message error">
+                            ✗ 数据库连接失败: ${data.message || '未知错误'}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="message error">
+                        ✗ 数据库连接测试失败: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function loadUsers() {
+            const userListDiv = document.getElementById('userList');
+            const statusDiv = document.getElementById('dbStatus');
+
+            try {
+                const response = await fetch(API_BASE + '/users');
+                const data = await response.json();
+
+                if (data.success) {
+                    // 显示数据库状态和统计信息
+                    let statusHtml = `
+                        <div class="message success" style="margin-bottom: 15px;">
+                            ✓ 成功从数据库加载 ${data.count} 个用户
+                            ${data.count > 0 ? '（数据已从MySQL数据库加载）' : '（数据库表为空，请先注册用户）'}
+                        </div>
+                    `;
+
+                    // 显示数据库统计信息
+                    if (data.databaseStats) {
+                        const stats = data.databaseStats;
+                        statusHtml += `
+                            <div style="background: #e8f4f8; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #17a2b8;">
+                                <strong style="color: #0c5460;">📊 数据库信息:</strong><br>
+                                <div style="margin-top: 10px; line-height: 1.8;">
+                                    <strong>数据库名:</strong> ${stats.databaseName || 'bookdb'}<br>
+                                    <strong>表数量:</strong> ${stats.tables ? stats.tables.length : 0}<br>
+                                    <strong>用户记录数:</strong> ${stats.userCount || 0}<br>
+                                    ${stats.tables && stats.tables.length > 0 ?
+                                `<strong>表列表:</strong> ${stats.tables.map(t => `<span style="background: #fff; padding: 3px 8px; border-radius: 4px; margin-right: 5px;">${t}</span>`).join('')}` :
+                                '<span style="color: #666;">暂无表</span>'}
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    statusDiv.innerHTML = statusHtml;
+                } else {
+                    statusDiv.innerHTML = `
+                        <div class="message error" style="margin-bottom: 15px;">
+                            ✗ 加载失败: ${data.message || '未知错误'}
+                        </div>
+                    `;
+                }
+
+                if (data.users && data.users.length > 0) {
+                    userListDiv.innerHTML = data.users.map(user => `
+                        <div class="user-card">
+                            <h3>${user.name} (ID: ${user.id})</h3>
+                            <p><strong>性别:</strong> ${user.gender === 'M' ? '男' : '女'}</p>
+                            <p><strong>年龄:</strong> ${user.age} 岁</p>
+                            <p><strong>身高:</strong> ${user.height} cm</p>
+                            <p><strong>城市:</strong> ${user.city}</p>
+                            ${user.education ? `<p><strong>学历:</strong> ${user.education}</p>` : ''}
+                            ${user.occupation ? `<p><strong>职业:</strong> ${user.occupation}</p>` : ''}
+                            ${user.interests && user.interests.length > 0 ? `
+                                <div class="interests">
+                                    ${user.interests.map(interest =>
+                        `<span class="interest-tag">${interest}</span>`
+                    ).join('')}
+                                </div>
+                            ` : ''}
+                            ${user.description ? `<p><strong>简介:</strong> ${user.description}</p>` : ''}
+                            <div class="user-card-actions">
+                                <button class="btn-edit" onclick="openEditModal(${user.id})">编辑</button>
+                                <button class="btn-delete" onclick="deleteUserConfirm(${user.id}, '${user.name}')">删除</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    userListDiv.innerHTML = '<p style="padding: 20px; text-align: center; color: #666;">暂无用户，请先注册用户</p>';
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div class="message error" style="margin-bottom: 15px;">
+                        ✗ 加载失败: ${error.message}
+                    </div>
+                `;
+                userListDiv.innerHTML = `<div class="message error">加载失败: ${error.message}</div>`;
+            }
+        }
+
+        // 加载bookdb中所有表的数据
+        async function loadAllTablesData() {
+            const tablesDiv = document.getElementById('allTablesData');
+            tablesDiv.innerHTML = '<p style="color: #666;">正在加载数据库所有表的数据...</p>';
+
+            try {
+                const response = await fetch(API_BASE + '/database/tables');
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    let html = '<div style="background: #f9f9f9; padding: 20px; border-radius: 10px; margin-bottom: 20px;">';
+                    html += '<h3 style="color: #667eea; margin-bottom: 15px;">📊 bookdb数据库所有表的数据</h3>';
+
+                    const tables = Object.keys(data.data);
+                    if (tables.length === 0) {
+                        html += '<p style="color: #666;">数据库中没有表</p>';
+                    } else {
+                        tables.forEach(tableName => {
+                            if (tableName.endsWith('_error')) {
+                                // 错误信息
+                                html += `
+                                    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #ffc107;">
+                                        <h4 style="color: #856404; margin-bottom: 10px;">表: ${tableName.replace('_error', '')}</h4>
+                                        <p style="color: #856404;">错误: ${data.data[tableName].error || '未知错误'}</p>
+                                    </div>
+                                `;
+                            } else {
+                                const tableData = data.data[tableName];
+                                html += `
+                                    <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #667eea;">
+                                        <h4 style="color: #667eea; margin-bottom: 10px;">
+                                            表: ${tableName} 
+                                            <span style="font-size: 0.8em; color: #666; font-weight: normal;">
+                                                (${tableData.length} 条记录)
+                                            </span>
+                                        </h4>
+                                `;
+
+                                if (tableData.length > 0) {
+                                    // 显示表头
+                                    const firstRow = tableData[0];
+                                    const columns = Object.keys(firstRow);
+
+                                    html += '<div style="overflow-x: auto;">';
+                                    html += '<table style="width: 100%; border-collapse: collapse; font-size: 0.9em;">';
+                                    html += '<thead><tr style="background: #f5f5f5;">';
+                                    columns.forEach(col => {
+                                        html += `<th style="padding: 10px; border: 1px solid #ddd; text-align: left;">${col}</th>`;
+                                    });
+                                    html += '</tr></thead><tbody>';
+
+                                    // 显示数据（最多显示20条）
+                                    const displayCount = Math.min(tableData.length, 20);
+                                    for (let i = 0; i < displayCount; i++) {
+                                        html += '<tr>';
+                                        columns.forEach(col => {
+                                            let value = tableData[i][col];
+                                            if (value === null) value = 'NULL';
+                                            else if (typeof value === 'object') value = JSON.stringify(value);
+                                            html += `<td style="padding: 8px; border: 1px solid #ddd;">${value}</td>`;
+                                        });
+                                        html += '</tr>';
+                                    }
+                                    html += '</tbody></table>';
+
+                                    if (tableData.length > 20) {
+                                        html += `<p style="margin-top: 10px; color: #666; font-size: 0.9em;">注: 仅显示前20条记录，共${tableData.length}条</p>`;
+                                    }
+
+                                    html += '</div>';
+                                } else {
+                                    html += '<p style="color: #666;">表中暂无数据</p>';
+                                }
+
+                                html += '</div>';
+                            }
+                        });
+                    }
+
+                    html += '</div>';
+                    tablesDiv.innerHTML = html;
+                } else {
+                    tablesDiv.innerHTML = `
+                        <div class="message error">
+                            ✗ 加载失败: ${data.message || '未知错误'}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                tablesDiv.innerHTML = `
+                    <div class="message error">
+                        ✗ 加载失败: ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        async function performMatch() {
+            const minScore = parseFloat(document.getElementById('minScore').value) || 50;
+            const resultsDiv = document.getElementById('matchResults');
+            resultsDiv.innerHTML = '<p>正在匹配中...</p>';
+
+            try {
+                // 先获取所有用户
+                const usersResponse = await fetch(API_BASE + '/users');
+                const usersData = await usersResponse.json();
+
+                // 执行匹配
+                const response = await fetch(API_BASE + '/match?minScore=' + minScore);
+                const data = await response.json();
+
+                if (data.success) {
+                    if (data.matches && data.matches.length > 0) {
+                        // 获取匹配的用户ID集合
+                        const matchedUserIds = new Set();
+                        data.matches.forEach(match => {
+                            matchedUserIds.add(match.userId1);
+                            matchedUserIds.add(match.userId2);
+                        });
+
+                        // 分离男性和女性用户
+                        const males = usersData.users.filter(u => u.gender === 'M');
+                        const females = usersData.users.filter(u => u.gender === 'F');
+
+                        // 创建匹配映射
+                        const matchMap = new Map();
+                        data.matches.forEach(match => {
+                            matchMap.set(match.userId1, match.userId2);
+                            matchMap.set(match.userId2, match.userId1);
+                        });
+
+                        resultsDiv.innerHTML = `
+                            <div class="message success">
+                                匹配完成！共找到 ${data.matchCount} 对匹配
+                                (男性: ${data.maleCount} 人, 女性: ${data.femaleCount} 人)
+                            </div>
+                            
+                            <div class="bipartite-graph">
+                                <h3 style="text-align: center; margin-bottom: 20px; color: #333;">
+                                    📊 二分图匹配可视化
+                                    <span style="font-size: 0.7em; color: #666; font-weight: normal;">
+                                        (红色连线表示匹配结果)
+                                    </span>
+                                </h3>
+                                <div class="graph-container" id="graphContainer">
+                                    <div class="left-nodes">
+                                        <div style="text-align: center; margin-bottom: 15px; font-weight: bold; color: #667eea;">
+                                            男性用户
+                                        </div>
+                                        ${males.map((male, idx) => `
+                                            <div style="position: relative;">
+                                                <div class="node ${matchedUserIds.has(male.id) ? 'matched' : ''}">
+                                                    ${male.name.substring(0, 2)}
+                                                </div>
+                                                <div class="node-label">${male.name}</div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    <div class="right-nodes">
+                                        <div style="text-align: center; margin-bottom: 15px; font-weight: bold; color: #667eea;">
+                                            女性用户
+                                        </div>
+                                        ${females.map((female, idx) => `
+                                            <div style="position: relative;">
+                                                <div class="node ${matchedUserIds.has(female.id) ? 'matched' : ''}">
+                                                    ${female.name.substring(0, 2)}
+                                                </div>
+                                                <div class="node-label">${female.name}</div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h3 style="margin-top: 30px;">匹配详情</h3>
+                            ${data.matches.map(match => `
+                                <div class="match-result">
+                                    <h3>${match.userName1} 💕 ${match.userName2}</h3>
+                                    <div class="score">匹配度: ${match.compatibilityScore.toFixed(1)}%</div>
+                                    <p><strong>匹配原因:</strong> ${match.matchReason}</p>
+                                </div>
+                            `).join('')}
+                        `;
+
+                        // 绘制连接线
+                        setTimeout(() => drawConnections(males, females, matchMap), 100);
+                    } else {
+                        resultsDiv.innerHTML = `
+                            <div class="message error">
+                                未找到匹配结果。请尝试降低最低兼容性分数，或注册更多用户。
+                            </div>
+                        `;
+                    }
+                } else {
+                    resultsDiv.innerHTML = `<div class="message error">匹配失败: ${data.message}</div>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="message error">错误: ${error.message}</div>`;
+            }
+        }
+
+        function drawConnections(males, females, matchMap) {
+            const container = document.getElementById('graphContainer');
+            if (!container) return;
+
+            const leftNodes = container.querySelectorAll('.left-nodes .node');
+            const rightNodes = container.querySelectorAll('.right-nodes .node');
+
+            // 清除旧的连接线
+            container.querySelectorAll('.connection-line').forEach(line => line.remove());
+
+            // 等待DOM更新完成
+            setTimeout(() => {
+                const containerRect = container.getBoundingClientRect();
+
+                males.forEach((male, maleIdx) => {
+                    if (maleIdx >= leftNodes.length) return;
+
+                    const maleNode = leftNodes[maleIdx];
+                    const maleRect = maleNode.getBoundingClientRect();
+                    const maleCenterX = maleRect.left + maleRect.width / 2 - containerRect.left;
+                    const maleCenterY = maleRect.top + maleRect.height / 2 - containerRect.top;
+
+                    const matchedFemaleId = matchMap.get(male.id);
+                    if (matchedFemaleId) {
+                        const femaleIdx = females.findIndex(f => f.id === matchedFemaleId);
+                        if (femaleIdx >= 0 && femaleIdx < rightNodes.length) {
+                            const femaleNode = rightNodes[femaleIdx];
+                            const femaleRect = femaleNode.getBoundingClientRect();
+                            const femaleCenterX = femaleRect.left + femaleRect.width / 2 - containerRect.left;
+                            const femaleCenterY = femaleRect.top + femaleRect.height / 2 - containerRect.top;
+
+                            const dx = femaleCenterX - maleCenterX;
+                            const dy = femaleCenterY - maleCenterY;
+                            const length = Math.sqrt(dx * dx + dy * dy);
+                            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+                            const line = document.createElement('div');
+                            line.className = 'connection-line matched';
+                            line.style.width = length + 'px';
+                            line.style.left = maleCenterX + 'px';
+                            line.style.top = maleCenterY + 'px';
+                            line.style.transform = `rotate(${angle}deg)`;
+                            container.appendChild(line);
+                        }
+                    }
+                });
+            }, 200);
+        }
+
+        // 打开编辑模态框
+        async function openEditModal(userId) {
+            try {
+                const response = await fetch(API_BASE + '/users/' + userId);
+                const data = await response.json();
+
+                if (data.success && data.user) {
+                    const user = data.user;
+                    document.getElementById('editUserId').value = user.id;
+                    document.getElementById('editName').value = user.name || '';
+                    document.getElementById('editGender').value = user.gender || '';
+                    document.getElementById('editAge').value = user.age || '';
+                    document.getElementById('editHeight').value = user.height || '';
+                    document.getElementById('editCity').value = user.city || '';
+                    document.getElementById('editEducation').value = user.education || '';
+                    document.getElementById('editOccupation').value = user.occupation || '';
+                    document.getElementById('editInterests').value = user.interests ? user.interests.join(',') : '';
+                    document.getElementById('editDescription').value = user.description || '';
+                    document.getElementById('editMessage').innerHTML = '';
+                    document.getElementById('editModal').style.display = 'block';
+                } else {
+                    alert('加载用户信息失败: ' + (data.message || '未知错误'));
+                }
+            } catch (error) {
+                alert('加载用户信息失败: ' + error.message);
+            }
+        }
+
+        // 关闭编辑模态框
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            document.getElementById('editForm').reset();
+            document.getElementById('editMessage').innerHTML = '';
+        }
+
+        // 更新用户
+        async function updateUser(event) {
+            event.preventDefault();
+
+            const userId = document.getElementById('editUserId').value;
+            const interestsStr = document.getElementById('editInterests').value;
+            const interests = interestsStr ? interestsStr.split(',').map(s => s.trim()) : [];
+
+            const user = {
+                name: document.getElementById('editName').value,
+                gender: document.getElementById('editGender').value,
+                age: parseInt(document.getElementById('editAge').value),
+                height: parseInt(document.getElementById('editHeight').value),
+                city: document.getElementById('editCity').value,
+                education: document.getElementById('editEducation').value,
+                occupation: document.getElementById('editOccupation').value,
+                interests: interests,
+                description: document.getElementById('editDescription').value
+            };
+
+            const messageDiv = document.getElementById('editMessage');
+            try {
+                const response = await fetch(API_BASE + '/users/' + userId, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(user)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP错误! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('更新用户API返回数据:', data); // 调试信息
+
+                if (data.success) {
+                    messageDiv.innerHTML = `<div class="message success">用户信息更新成功！</div>`;
+                    setTimeout(() => {
+                        closeEditModal();
+                        loadUsers(); // 刷新用户列表
+                    }, 1000);
+                } else {
+                    const errorMsg = data.message || '未知错误';
+                    messageDiv.innerHTML = `<div class="message error">更新失败: ${errorMsg}</div>`;
+                    console.error('更新用户失败:', data);
+                }
+            } catch (error) {
+                messageDiv.innerHTML = `<div class="message error">错误: ${error.message}<br>请检查后端服务是否正常运行</div>`;
+                console.error('更新用户时发生异常:', error);
+            }
+        }
+
+        // 删除用户确认
+        async function deleteUserConfirm(userId, userName) {
+            if (confirm(`确定要删除用户 "${userName}" (ID: ${userId}) 吗？此操作无法撤销！`)) {
+                try {
+                    const response = await fetch(API_BASE + '/users/' + userId, {
+                        method: 'DELETE'
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        alert('用户删除成功！');
+                        loadUsers(); // 刷新用户列表
+                    } else {
+                        alert('删除失败: ' + data.message);
+                    }
+                } catch (error) {
+                    alert('删除失败: ' + error.message);
+                }
+            }
+        }
+
+        // 加载匹配规则说明
+        async function loadMatchRules() {
+            const rulesContent = document.getElementById('rulesContent');
+            try {
+                const response = await fetch(API_BASE + '/match-rules');
+
+                if (!response.ok) {
+                    throw new Error(`HTTP错误! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('匹配规则API返回数据:', data); // 调试信息
+
+                if (data.success && data.rules) {
+                    const rules = data.rules;
+
+                    let html = `
+                        <div class="rule-section">
+                            <h3>${rules.title || '匹配规则说明'}</h3>
+                            <p>${rules.description || '系统使用匈牙利算法进行二分图最大匹配，兼容性评分综合考虑以下因素：'}</p>
+                        </div>
+                    `;
+
+                    if (rules.factors && rules.factors.length > 0) {
+                        html += '<div class="rule-section"><h3>评分因素</h3>';
+                        rules.factors.forEach(factor => {
+                            html += `
+                                <div class="rule-item">
+                                    <strong>${factor.name || '未知因素'}</strong>
+                                    <span>权重: ${factor.weight || '未知'}</span>
+                                    <p style="margin-top: 8px; color: #666;">${factor.rule || '无说明'}</p>
+                                </div>
+                            `;
+                        });
+                        html += '</div>';
+                    }
+
+                    html += `
+                        <div class="rule-section">
+                            <h3>算法说明</h3>
+                            <div class="rule-item">
+                                <strong>${rules.algorithm || '匈牙利算法（二分图最大匹配算法）'}</strong>
+                                <p style="margin-top: 8px; color: #666;">${rules.algorithmDesc || '通过寻找增广路径，找到最大数量的匹配对，确保每个用户最多匹配一个对象'}</p>
+                            </div>
+                        </div>
+                    `;
+
+                    html += `
+                        <div class="rule-section">
+                            <h3>使用说明</h3>
+                            <div class="rule-item">
+                                <p style="color: #666;">${rules.minScore || '默认最低兼容性分数为50分，可在匹配页面自定义调整'}</p>
+                                <p style="margin-top: 8px; color: #666;">
+                                    系统会根据所有评分因素计算每对用户的兼容性分数，只有达到最低分数阈值的用户对才会进行匹配。
+                                    使用匈牙利算法找到最大数量的匹配对，确保每个用户最多只能匹配一个对象。
+                                </p>
+                            </div>
+                        </div>
+                    `;
+
+                    rulesContent.innerHTML = html;
+                } else {
+                    rulesContent.innerHTML = `<div class="message error">加载规则说明失败: ${data.message || '数据格式错误'}</div>`;
+                    console.error('API返回数据格式错误:', data);
+                }
+            } catch (error) {
+                rulesContent.innerHTML = `<div class="message error">错误: ${error.message}<br>请检查后端服务是否正常运行</div>`;
+                console.error('加载匹配规则失败:', error);
+            }
+        }
+
+        // 点击模态框外部关闭
+        window.onclick = function (event) {
+            const modal = document.getElementById('editModal');
+            if (event.target == modal) {
+                closeEditModal();
+            }
+        }
+    </script>
+</body>
+
+</html>
