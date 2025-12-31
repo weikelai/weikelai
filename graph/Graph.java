@@ -165,6 +165,28 @@ public class Graph {
     }
 
     /**
+     * 保存所有边的原始容量
+     * @return 容量映射表（边 -> 原始容量）
+     */
+    public Map<Edge, Integer> saveOriginalCapacities() {
+        Map<Edge, Integer> originalCapacities = new HashMap<>();
+        for (Edge edge : edges) {
+            originalCapacities.put(edge, edge.getCapacity());
+        }
+        return originalCapacities;
+    }
+
+    /**
+     * 恢复所有边的原始容量
+     * @param originalCapacities 原始容量映射表
+     */
+    public void restoreOriginalCapacities(Map<Edge, Integer> originalCapacities) {
+        for (Map.Entry<Edge, Integer> entry : originalCapacities.entrySet()) {
+            entry.getKey().setCapacity(entry.getValue());
+        }
+    }
+
+    /**
      * 打印图结构
      */
     public void printGraph() {
@@ -180,6 +202,31 @@ public class Graph {
             System.out.println("  " + edge);
         }
         System.out.println();
+    }
+
+    /**
+     * 深拷贝图（节点与边均复制，流量置为0）
+     */
+    public Graph deepCopy() {
+        Graph copy = new Graph();
+        Map<Node, Node> nodeMap = new HashMap<>();
+
+        // 复制节点
+        for (Node node : this.nodes) {
+            Node nodeCopy = new Node(node.getId(), node.getName(), node.getType());
+            copy.addNode(nodeCopy);
+            nodeMap.put(node, nodeCopy);
+        }
+
+        // 复制边（保持容量与代价，流量置0）
+        for (Edge edge : this.edges) {
+            Node fromCopy = nodeMap.get(edge.getFrom());
+            Node toCopy = nodeMap.get(edge.getTo());
+            Edge edgeCopy = new Edge(fromCopy, toCopy, edge.getCapacity(), 0, edge.getCost());
+            copy.addEdge(edgeCopy);
+        }
+
+        return copy;
     }
 }
 

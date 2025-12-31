@@ -3,6 +3,7 @@ import graph.Graph;
 import simulation.AttackSimulator;
 import util.InputParser;
 import util.OutputPrinter;
+import entity.Node;
 
 /**
  * 主程序入口
@@ -18,6 +19,8 @@ public class Main {
 
         // 构建网络拓扑（使用默认示例）
         Graph graph = InputParser.buildDefaultGraph();
+        // 方案1：增加并行汇聚链路（路由器1/2 -> 目标服务器），设置不同容量/代价
+        addParallelConvergingLinks(graph);
         
         // 打印网络拓扑
         graph.printGraph();
@@ -65,7 +68,7 @@ public class Main {
         // 输出各边流量状态
         OutputPrinter.printFlowStatus(graph);
 
-        // 对比不同攻击强度
+        // 对比不同攻击强度，使用 AttackSimulator 内部深拷贝与代价/容量动态
         int[] attackIntensities = {20, 50, 80, 100, 150};
         simulator.compareAttackScenarios(attackIntensities);
 
@@ -73,4 +76,16 @@ public class Main {
         System.out.println("实验完成！");
         System.out.println("========================================");
     }
+
+    // 增加并行汇聚链路：路由器1->服务器、路由器2->服务器，容量与代价不同
+    private static void addParallelConvergingLinks(Graph graph) {
+        Node router1 = graph.findNodeByName("路由器1");
+        Node router2 = graph.findNodeByName("路由器2");
+        Node server = graph.findNodeByName("目标服务器");
+        if (router1 != null && router2 != null && server != null) {
+            graph.addEdge(router1, server, 40, 2); // 较小容量、较低代价
+            graph.addEdge(router2, server, 30, 4); // 更小容量、较高代价
+        }
+    }
+
 }
