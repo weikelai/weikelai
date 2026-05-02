@@ -28,8 +28,8 @@ import okhttp3.Response;
 public class TecentHttpUtil {
     private static final String TAG = "TecentHttpUtil";
     // 腾讯云API密钥配置
-    private static final String SECRET_ID = "AKIDWwGQWUO6e084oZIwUxJYdeaL6mGakhW9";
-    private static final String SECRET_KEY = "Tp00oJdkfO9oLqRyMYr8FCzbAav3yhGd";
+    private static final String SECRET_ID = "xxx";
+    private static final String SECRET_KEY = "xxx";
     
     private static final String HOST = "ocr.tencentcloudapi.com";
     private static final String ACTION = "IDCardOCR";
